@@ -36,6 +36,9 @@ const verboseLog = false; // If set to true, log verbose output to the console. 
 const numTrials = 10000;
 const handsPerTrial = 1000;
 
+// The count
+var hiLoCount;
+
 function Log(text)
 {
     if (verboseLog)
@@ -70,7 +73,18 @@ function HandTotal(cards)
 
 function DealCard()
 {
-    return deck.pop();
+    var card = deck.pop();
+
+    if ((card >= 2) && (card <= 6))
+    {
+        hiLoCount++;
+    }
+    else if ((card == 1) || (card == 10))
+    {
+        hiLoCount--;
+    }
+
+    return card;
 }
 
 function PrintHand(cards)
@@ -100,6 +114,7 @@ function InitializeDeck(numberOfDecks)
     }
 
     shuffle(deck);
+    hiLoCount = 0;
 }
 
 // Plays the dealer's hand -- pretty straight forward, hit until bust or 17
@@ -298,20 +313,44 @@ function EvaluateHand(playerHand, dealerCards, options)
 
 function RunAGame(options)
 {
+    var betAmount = initialBet;
+    var trueCount;
+
     // Check if we need to reshuffle
     if (deck.length < Math.max(26, 13 * options.numberOfDecks))
     {
         Log("Shuffle");
         InitializeDeck(options.numberOfDecks);
     }
-    
+
+    // If we're counting, set the count and bet
+    if (options.count && (options.count.system == "HiLo"))
+    {
+        trueCount = hiLoCount / (deck.length / 52);
+        options.count.trueCount = trueCount;
+
+        // Simple bet variation - double at +2, quadruple at +4, half at -3
+        if (trueCount >= 4)
+        {
+            betAmount *= 4;
+        }
+        else if (trueCount >= 2)
+        {
+            betAmount *= 2;
+        }
+        else if (trueCount <= -3)
+        {
+            betAmount /= 2;
+        }
+    }
+        
     // Deal cards to dealer and player
     var dealerCards = [];
     dealerCards.push(DealCard());
     dealerCards.push(DealCard());
 
     var playerHand = [];
-    var hand = {bet: initialBet, cards: []};
+    var hand = {bet: betAmount, cards: []};
     hand.cards.push(DealCard());
     hand.cards.push(DealCard());
     playerHand.push(hand);
@@ -361,12 +400,8 @@ function average(data){
 // Holds the aggregate result from each run of X hands
 var simulationResults = [];
 
-// output file - if not defined use "output.csv"
+// output file - if not defined we don't output
 var outputFile = process.argv.slice(2)[0];
-if (!outputFile) 
-{
-    outputFile = "output.csv";
-}
 
 for (var trial = 0; trial < numTrials; trial++)
 {
@@ -375,7 +410,7 @@ for (var trial = 0; trial < numTrials; trial++)
     for (var i = 0; i < handsPerTrial; i++)
     {
         // Here's where you control and can evaluation different options
-        runningTotal += RunAGame({numberOfDecks: 6, BJPayout: 0.5, strategyComplexity:"easy"});
+        runningTotal += RunAGame({numberOfDecks: 2, BJPayout: 0.5, hitSoft17: false, strategyComplexity:"advanced", count: {system: "HiLo", trueCount: 0}});
         Log("Running total " + runningTotal);
         Log("");
     }
@@ -384,13 +419,16 @@ for (var trial = 0; trial < numTrials; trial++)
 }
 
 // Calculate stddev and average
-fs.appendFileSync(outputFile, "Average:" + average(simulationResults) + "\n");
-fs.appendFileSync(outputFile, "StdDev:" + standardDeviation(simulationResults) + "\n");
 console.log("Average:" + average(simulationResults) + "%");
 console.log("StdDev:" + standardDeviation(simulationResults) + "%");
 
-// Write out all the results to a file
-for (var i = 0; i < simulationResults.length; i++)
+// Write out all the results to a file if specified
+if (outputFile)
 {
-    fs.appendFileSync(outputFile, simulationResults[i] + "%\n");
+    fs.appendFileSync(outputFile, "Average:" + average(simulationResults) + "\n");
+    fs.appendFileSync(outputFile, "StdDev:" + standardDeviation(simulationResults) + "\n");
+    for (var i = 0; i < simulationResults.length; i++)
+    {
+        fs.appendFileSync(outputFile, simulationResults[i] + "%\n");
+    }
 }
