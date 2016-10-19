@@ -5,7 +5,7 @@
   "main": "simulator.js",
   "dependencies": {
     "knuth-shuffle": "^1.0.1",
-    "blackjack-strategy": "^1.2.0"
+    "blackjack-strategy": "^1.3.0"
   },
   "devDependencies": {},
   "scripts": {
