@@ -1,4 +1,4 @@
-"# blackjack-simulator" 
+# blackjack-simulator
 
 This application simulates a player going head-to-head against the dealer in rounds of blackjack.  The player will
 play according to Basic Strategy rules, as determined by the `blackjack-strategy` project.  You can either change 
