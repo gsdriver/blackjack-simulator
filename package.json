@@ -1,0 +1,34 @@
+{
+  "name": "blackjack-simulator",
+  "version": "1.0.0",
+  "description": "Simulation program to run multiple hands based on Basic Strategy",
+  "main": "simulator.js",
+  "dependencies": {
+    "knuth-shuffle": "^1.0.1",
+    "blackjack-strategy": "^1.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node simulator.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gsdriver/blackjack-simulator.git"
+  },
+  "keywords": [
+    "blackjack",
+    "basic strategy",
+    "game"
+  ],
+  "directories": {
+    "doc": ".",
+    "test": ".",
+    "lib": "."
+  },
+  "author": "Garrett Vargas <gsdriver@live.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gsdriver/blackjack-simulator/issues"
+  },
+  "homepage": "https://github.com/gsdriver/blackjack-simulator#readme"
+}

@@ -375,7 +375,7 @@ for (var trial = 0; trial < numTrials; trial++)
     for (var i = 0; i < handsPerTrial; i++)
     {
         // Here's where you control and can evaluation different options
-        runningTotal += RunAGame({numberOfDecks: 6, BJPayout: 0.5, strategyComplexity:"simple"});
+        runningTotal += RunAGame({numberOfDecks: 6, BJPayout: 0.5, strategyComplexity:"easy"});
         Log("Running total " + runningTotal);
         Log("");
     }
