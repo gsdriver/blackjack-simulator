@@ -1,6 +1,6 @@
 {
   "name": "blackjack-simulator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simulation program to run multiple hands based on Basic Strategy",
   "main": "simulator.js",
   "dependencies": {
