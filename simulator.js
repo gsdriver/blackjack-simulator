@@ -403,6 +403,9 @@ var simulationResults = [];
 // output file - if not defined we don't output
 var outputFile = process.argv.slice(2)[0];
 
+// Snap the time
+console.time('PlayBlackJack');
+
 for (var trial = 0; trial < numTrials; trial++)
 {
     var runningTotal = 0;
@@ -410,7 +413,7 @@ for (var trial = 0; trial < numTrials; trial++)
     for (var i = 0; i < handsPerTrial; i++)
     {
         // Here's where you control and can evaluation different options
-        runningTotal += RunAGame({numberOfDecks: 2, BJPayout: 0.5, hitSoft17: false, strategyComplexity:"advanced", count: {system: "HiLo", trueCount: 0}});
+        runningTotal += RunAGame({numberOfDecks: 2, BJPayout: 0.5, hitSoft17: false, strategyComplexity:"exactComposition", count: {system: "HiLo", trueCount: 0}});
         Log("Running total " + runningTotal);
         Log("");
     }
@@ -419,6 +422,7 @@ for (var trial = 0; trial < numTrials; trial++)
 }
 
 // Calculate stddev and average
+console.timeEnd('PlayBlackJack');
 console.log("Average:" + average(simulationResults) + "%");
 console.log("StdDev:" + standardDeviation(simulationResults) + "%");
 
